@@ -4,350 +4,217 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cabal Studio — Current</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --white: #ffffff;
-    --black: #111111;
-    --gray-light: #f5f5f5;
-    --gray-mid: #999;
-    --gray-dark: #444;
-    --border: #e0e0e0;
-    --active: #1a1a1a;
-    --active-dot: #2E7D5E;
-    --blocked-dot: #C47F2A;
-    --incubating-dot: #7B6EC2;
-    --pending-dot: #bbb;
-    --serif: 'Playfair Display', Georgia, serif;
-    --sans: 'Inter', -apple-system, sans-serif;
+    --black: #111;
+    --white: #fff;
+    --gray: #888;
+    --border: #ddd;
+    --mono: 'Courier Prime', 'Courier New', monospace;
   }
 
   body {
-    font-family: var(--sans);
+    font-family: var(--mono);
     background: var(--white);
     color: var(--black);
     font-size: 15px;
-    line-height: 1.6;
-    padding: 0;
-    margin: 0;
+    line-height: 1.5;
   }
 
   .site-header {
-    border-bottom: 1px solid var(--black);
-    padding: 1.25rem 2rem;
+    border-bottom: 1.5px solid var(--black);
+    padding: 1rem 1.5rem;
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
   }
 
   .site-name {
-    font-family: var(--sans);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--black);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
   }
 
   .site-date {
     font-size: 12px;
-    color: var(--gray-mid);
-    font-weight: 300;
+    color: var(--gray);
   }
 
-  .main {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 3rem 2rem 6rem;
-  }
-
-  .page-title {
-    font-family: var(--serif);
-    font-size: 42px;
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.01em;
-    margin-bottom: 0.35rem;
-  }
-
-  .page-subtitle {
-    font-size: 13px;
-    color: var(--gray-mid);
-    font-weight: 300;
-    margin-bottom: 2.5rem;
-  }
-
-  .legend {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
+  .nav {
     border-bottom: 1px solid var(--border);
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 12px;
-    color: var(--gray-dark);
-    font-weight: 300;
-  }
-
-  .dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .dot-active     { background: var(--active-dot); }
-  .dot-blocked    { background: var(--blocked-dot); }
-  .dot-incubating { background: var(--incubating-dot); }
-  .dot-pending    { background: var(--pending-dot); }
-
-  .filters {
+    padding: 0 1.5rem;
     display: flex;
     gap: 0;
-    flex-wrap: wrap;
-    margin-bottom: 2.5rem;
+    overflow-x: auto;
   }
 
-  .filter-btn {
-    font-family: var(--sans);
-    font-size: 12px;
-    font-weight: 400;
-    padding: 4px 14px 4px 0;
+  .nav-btn {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 10px 16px 10px 0;
     background: none;
     border: none;
-    color: var(--gray-mid);
+    border-bottom: 2px solid transparent;
+    color: var(--gray);
     cursor: pointer;
-    letter-spacing: 0.02em;
-    border-bottom: 1.5px solid transparent;
-    transition: color 0.1s, border-color 0.1s;
+    white-space: nowrap;
+    margin-bottom: -1px;
   }
 
-  .filter-btn:hover { color: var(--black); }
-  .filter-btn.active { color: var(--black); border-bottom-color: var(--black); }
+  .nav-btn:hover { color: var(--black); }
+  .nav-btn.active { color: var(--black); border-bottom-color: var(--black); }
 
-  .area {
-    margin-bottom: 2.5rem;
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0;
   }
 
-  .area-label {
+  .card {
+    padding: 1.25rem;
+    border-right: 1px solid var(--black);
+    border-bottom: 1px solid var(--black);
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .card:hover { opacity: 0.85; }
+
+  .card-top { flex: 1; }
+
+  .card-area {
     font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--gray-mid);
+    margin-bottom: 0.5rem;
+    opacity: 0.7;
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.25;
     margin-bottom: 0.75rem;
   }
 
-  .project-row {
+  .card-next {
+    font-size: 12px;
+    line-height: 1.5;
+    opacity: 0.8;
+  }
+
+  .card-bottom {
+    margin-top: 1.5rem;
     display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 14px 0;
-    border-top: 1px solid var(--border);
-    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
   }
 
-  .project-row:last-child {
-    border-bottom: 1px solid var(--border);
-  }
-
-  .dot-col {
-    margin-top: 7px;
-    flex-shrink: 0;
-  }
-
-  .project-body { flex: 1; }
-
-  .project-title {
-    font-family: var(--serif);
-    font-size: 18px;
-    font-weight: 400;
-    color: var(--black);
-    margin-bottom: 3px;
-    line-height: 1.3;
-  }
-
-  .project-next {
-    font-size: 13px;
-    color: var(--gray-dark);
-    font-weight: 300;
-    line-height: 1.55;
-  }
-
-  .project-meta {
+  .card-status {
     font-size: 11px;
-    color: var(--gray-mid);
-    margin-top: 5px;
-    font-weight: 300;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.7;
   }
 
-  .detail-panel {
+  .card-where {
+    font-size: 11px;
+    opacity: 0.6;
+    text-align: right;
+  }
+
+  .detail-overlay {
     display: none;
-    padding: 14px 0 14px 21px;
-    border-top: 1px solid var(--border);
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
   }
 
-  .detail-panel.open { display: block; }
+  .detail-overlay.open {
+    display: flex;
+  }
+
+  .detail-box {
+    background: var(--white);
+    border: 1.5px solid var(--black);
+    max-width: 520px;
+    width: 100%;
+    padding: 2rem;
+    position: relative;
+  }
+
+  .detail-area {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+  }
+
+  .detail-title {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
 
   .detail-desc {
     font-size: 13px;
-    color: var(--gray-dark);
     line-height: 1.65;
-    font-weight: 300;
-    margin-bottom: 8px;
+    color: #333;
+    margin-bottom: 1rem;
   }
 
-  .detail-where {
-    font-size: 11px;
-    color: var(--gray-mid);
-    font-weight: 300;
-  }
-
-  .detail-edit {
-    margin-top: 12px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .edit-btn {
-    font-size: 11px;
-    font-family: var(--sans);
-    padding: 4px 12px;
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--gray-dark);
-    cursor: pointer;
-    border-radius: 2px;
-    transition: border-color 0.1s, color 0.1s;
-  }
-
-  .edit-btn:hover { border-color: var(--black); color: var(--black); }
-
-  .edit-form {
-    display: none;
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px solid var(--border);
-  }
-
-  .edit-form.open { display: block; }
-
-  .edit-form label {
-    display: block;
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--gray-mid);
-    margin-bottom: 4px;
-    margin-top: 12px;
-  }
-
-  .edit-form label:first-child { margin-top: 0; }
-
-  .edit-form input,
-  .edit-form textarea,
-  .edit-form select {
-    width: 100%;
-    font-family: var(--sans);
+  .detail-next {
     font-size: 13px;
-    font-weight: 300;
-    color: var(--black);
-    background: var(--gray-light);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    padding: 7px 10px;
-    outline: none;
-    resize: vertical;
+    border-left: 3px solid var(--black);
+    padding-left: 0.75rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
   }
 
-  .edit-form input:focus,
-  .edit-form textarea:focus,
-  .edit-form select:focus {
-    border-color: var(--black);
-  }
-
-  .edit-actions {
-    margin-top: 14px;
-    display: flex;
-    gap: 10px;
-  }
-
-  .btn-save {
+  .detail-meta {
     font-size: 11px;
-    font-family: var(--sans);
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 6px 16px;
-    background: var(--black);
-    color: var(--white);
-    border: 1px solid var(--black);
-    cursor: pointer;
-    border-radius: 2px;
+    color: var(--gray);
+    margin-bottom: 1.5rem;
   }
 
-  .btn-cancel {
-    font-size: 11px;
-    font-family: var(--sans);
-    padding: 6px 16px;
+  .detail-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-family: var(--mono);
+    font-size: 13px;
     background: none;
-    color: var(--gray-mid);
     border: 1px solid var(--border);
+    padding: 3px 10px;
     cursor: pointer;
-    border-radius: 2px;
+    color: var(--gray);
   }
 
-  .export-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--white);
-    border-top: 1px solid var(--border);
-    padding: 1rem 2rem;
-    display: none;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 12px;
-    color: var(--gray-dark);
-    z-index: 100;
-  }
+  .detail-close:hover { color: var(--black); border-color: var(--black); }
 
-  .export-bar.visible { display: flex; }
-
-  .btn-export {
-    font-size: 11px;
-    font-family: var(--sans);
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 6px 16px;
-    background: var(--black);
-    color: var(--white);
-    border: 1px solid var(--black);
-    cursor: pointer;
-    border-radius: 2px;
+  .grid-border-top {
+    border-top: 1.5px solid var(--black);
   }
 
   .hidden { display: none; }
 
-  @media (max-width: 520px) {
-    .main { padding: 2rem 1.25rem 5rem; }
-    .page-title { font-size: 32px; }
-    .site-header { padding: 1rem 1.25rem; }
+  @media (max-width: 500px) {
+    .grid { grid-template-columns: 1fr 1fr; }
+    .card { min-height: 160px; padding: 1rem; }
+    .card-title { font-size: 13px; }
   }
 </style>
 </head>
@@ -358,27 +225,24 @@
   <div class="site-date" id="updated-date"></div>
 </header>
 
-<main class="main">
-  <h1 class="page-title">Current work</h1>
-  <p class="page-subtitle">Projects, practice, and what's next.</p>
+<nav class="nav" id="nav"></nav>
 
-  <div class="legend">
-    <div class="legend-item"><div class="dot dot-active"></div> Active</div>
-    <div class="legend-item"><div class="dot dot-blocked"></div> Blocked</div>
-    <div class="legend-item"><div class="dot dot-incubating"></div> Incubating</div>
-    <div class="legend-item"><div class="dot dot-pending"></div> Pending</div>
+<div class="grid grid-border-top" id="grid"></div>
+
+<div class="detail-overlay" id="overlay" onclick="closeDetail(event)">
+  <div class="detail-box" id="detail-box">
+    <button class="detail-close" onclick="closeOverlay()">close</button>
+    <div class="detail-area" id="d-area"></div>
+    <div class="detail-title" id="d-title"></div>
+    <div class="detail-next" id="d-next"></div>
+    <div class="detail-desc" id="d-desc"></div>
+    <div class="detail-meta" id="d-meta"></div>
   </div>
-
-  <div class="filters" id="filters"></div>
-  <div id="areas"></div>
-</main>
-
-<div class="export-bar" id="export-bar">
-  <span>You have unsaved changes.</span>
-  <button class="btn-export" onclick="exportJSON()">Download updated JSON</button>
 </div>
 
 <script>
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZvp_64L-DXn8A9lYH2kNKuguom0IMjiFRKKsZCHH4yI4uIOh-tr1IaUmGUPQuHZs9hFStxUHYExFo/pub?gid=2086028292&single=true&output=csv';
+
 const STATUS_LABELS = {
   active: 'Active',
   blocked: 'Blocked',
@@ -386,150 +250,118 @@ const STATUS_LABELS = {
   pending: 'Pending'
 };
 
-let data = null;
-let hasChanges = false;
+let projects = [];
+let currentFilter = 'all';
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+  return lines.slice(1).map(line => {
+    const vals = [];
+    let cur = '', inQ = false;
+    for (let c of line) {
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { vals.push(cur.trim()); cur = ''; }
+      else cur += c;
+    }
+    vals.push(cur.trim());
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = (vals[i] || '').replace(/^"|"$/g, ''));
+    return obj;
+  }).filter(p => p.title);
+}
+
+function luminance(hex) {
+  const r = parseInt(hex.slice(1,3),16)/255;
+  const g = parseInt(hex.slice(3,5),16)/255;
+  const b = parseInt(hex.slice(5,7),16)/255;
+  const toL = c => c <= 0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4);
+  return 0.2126*toL(r) + 0.7152*toL(g) + 0.0722*toL(b);
+}
+
+function textColor(hex) {
+  return luminance(hex) > 0.35 ? '#111' : '#fff';
+}
 
 async function load() {
   try {
-    const res = await fetch('projects.json');
-    data = await res.json();
-    render();
+    const res = await fetch(CSV_URL);
+    const text = await res.text();
+    projects = parseCSV(text);
+    document.getElementById('updated-date').textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    renderNav();
+    renderGrid();
   } catch(e) {
-    document.getElementById('areas').innerHTML = '<p style="color:#bbb;font-size:13px;font-weight:300;">Could not load projects.json</p>';
+    document.getElementById('grid').innerHTML = '<p style="padding:2rem;color:#999;font-size:13px;">Could not load data.</p>';
   }
 }
 
-function render() {
-  const d = new Date(data.updated);
-  document.getElementById('updated-date').textContent = 'Updated ' + d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-  renderFilters();
-  renderAreas('all');
+function getAreas() {
+  const seen = new Set();
+  const areas = [];
+  projects.forEach(p => {
+    if (!seen.has(p.area)) {
+      seen.add(p.area);
+      areas.push({ id: p.area, label: p.area_label });
+    }
+  });
+  return areas;
 }
 
-function renderFilters() {
-  const el = document.getElementById('filters');
-  const areas = [{ id: 'all', label: 'All' }, ...data.areas.map(a => ({ id: a.id, label: a.label }))];
+function renderNav() {
+  const el = document.getElementById('nav');
+  const areas = [{ id: 'all', label: 'Everything' }, ...getAreas()];
   el.innerHTML = areas.map(a =>
-    `<button class="filter-btn ${a.id === 'all' ? 'active' : ''}" onclick="filterBy('${a.id}', this)">${a.label}</button>`
+    `<button class="nav-btn ${a.id === 'all' ? 'active' : ''}" onclick="filterBy('${a.id}', this)">${a.label}</button>`
   ).join('');
 }
 
-function renderAreas(filter) {
-  const el = document.getElementById('areas');
-  el.innerHTML = data.areas.map(area => {
-    const visible = filter === 'all' || filter === area.id;
+function renderGrid() {
+  const el = document.getElementById('grid');
+  const filtered = currentFilter === 'all' ? projects : projects.filter(p => p.area === currentFilter);
+  el.innerHTML = filtered.map((p, i) => {
+    const bg = p.color || '#f0f0f0';
+    const fg = textColor(bg);
     return `
-      <div class="area ${visible ? '' : 'hidden'}" data-area="${area.id}">
-        <div class="area-label">${area.label}</div>
-        ${area.projects.map((p, pi) => renderProject(area.id, p, pi)).join('')}
+      <div class="card" style="background:${bg};color:${fg}" onclick="openDetail(${projects.indexOf(p)})">
+        <div class="card-top">
+          <div class="card-area">${p.area_label}</div>
+          <div class="card-title">${p.title}</div>
+          <div class="card-next">${p.next}</div>
+        </div>
+        <div class="card-bottom">
+          <div class="card-status">${STATUS_LABELS[p.status] || p.status}</div>
+          ${p.where && p.where !== '—' ? `<div class="card-where">${p.where}</div>` : ''}
+        </div>
       </div>
     `;
   }).join('');
 }
 
-function renderProject(areaId, p, pi) {
-  return `
-    <div class="project-row" onclick="toggleDetail('${p.id}')">
-      <div class="dot-col"><div class="dot dot-${p.status}"></div></div>
-      <div class="project-body">
-        <div class="project-title">${p.title}</div>
-        <div class="project-next">${p.next}</div>
-        <div class="project-meta">${STATUS_LABELS[p.status]}${p.where && p.where !== '—' ? ' · ' + p.where : ''}</div>
-      </div>
-    </div>
-    <div class="detail-panel" id="detail-${p.id}">
-      <div class="detail-desc">${p.desc}</div>
-      ${p.where && p.where !== '—' ? `<div class="detail-where">Lives in: ${p.where}</div>` : ''}
-      <div class="detail-edit">
-        <button class="edit-btn" onclick="toggleEdit('${p.id}', event)">Edit</button>
-      </div>
-      <div class="edit-form" id="edit-${p.id}">
-        <label>Title</label>
-        <input type="text" id="f-title-${p.id}" value="${esc(p.title)}">
-        <label>What's next</label>
-        <input type="text" id="f-next-${p.id}" value="${esc(p.next)}">
-        <label>Description</label>
-        <textarea id="f-desc-${p.id}" rows="3">${esc(p.desc)}</textarea>
-        <label>Status</label>
-        <select id="f-status-${p.id}">
-          ${['active','blocked','incubating','pending'].map(s =>
-            `<option value="${s}" ${p.status === s ? 'selected' : ''}>${STATUS_LABELS[s]}</option>`
-          ).join('')}
-        </select>
-        <label>Lives in</label>
-        <input type="text" id="f-where-${p.id}" value="${esc(p.where || '')}">
-        <div class="edit-actions">
-          <button class="btn-save" onclick="saveProject('${areaId}', '${p.id}', event)">Save</button>
-          <button class="btn-cancel" onclick="cancelEdit('${p.id}', event)">Cancel</button>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function esc(str) {
-  return (str || '').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
-function toggleDetail(id) {
-  const panel = document.getElementById('detail-' + id);
-  if (panel) panel.classList.toggle('open');
-}
-
-function toggleEdit(id, e) {
-  e.stopPropagation();
-  const form = document.getElementById('edit-' + id);
-  if (form) form.classList.toggle('open');
-}
-
-function cancelEdit(id, e) {
-  e.stopPropagation();
-  const form = document.getElementById('edit-' + id);
-  if (form) form.classList.remove('open');
-}
-
-function saveProject(areaId, projectId, e) {
-  e.stopPropagation();
-  const area = data.areas.find(a => a.id === areaId);
-  if (!area) return;
-  const project = area.projects.find(p => p.id === projectId);
-  if (!project) return;
-
-  project.title  = document.getElementById('f-title-' + projectId).value;
-  project.next   = document.getElementById('f-next-' + projectId).value;
-  project.desc   = document.getElementById('f-desc-' + projectId).value;
-  project.status = document.getElementById('f-status-' + projectId).value;
-  project.where  = document.getElementById('f-where-' + projectId).value;
-
-  data.updated = new Date().toISOString().slice(0, 10);
-  hasChanges = true;
-
-  const currentFilter = document.querySelector('.filter-btn.active')?.dataset?.filter || 'all';
-  renderFilters();
-  renderAreas(currentFilter);
-
-  document.getElementById('detail-' + projectId)?.classList.add('open');
-  document.getElementById('export-bar')?.classList.add('visible');
-}
-
 function filterBy(areaId, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  currentFilter = areaId;
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  btn.dataset.filter = areaId;
-  document.querySelectorAll('.area').forEach(a => {
-    a.classList.toggle('hidden', areaId !== 'all' && a.dataset.area !== areaId);
-  });
+  renderGrid();
 }
 
-function exportJSON() {
-  const json = JSON.stringify(data, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'projects.json';
-  a.click();
-  URL.revokeObjectURL(url);
+function openDetail(idx) {
+  const p = projects[idx];
+  if (!p) return;
+  document.getElementById('d-area').textContent = p.area_label;
+  document.getElementById('d-title').textContent = p.title;
+  document.getElementById('d-next').textContent = p.next;
+  document.getElementById('d-desc').textContent = p.desc;
+  document.getElementById('d-meta').textContent = [STATUS_LABELS[p.status], p.where].filter(x => x && x !== '—').join(' · ');
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeDetail(e) {
+  if (e.target === document.getElementById('overlay')) closeOverlay();
+}
+
+function closeOverlay() {
+  document.getElementById('overlay').classList.remove('open');
 }
 
 load();
