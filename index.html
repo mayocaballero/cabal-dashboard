@@ -14,7 +14,7 @@ ul { list-style-type: none; margin: 0; padding: 0; }
   --background-color: white;
   --color: black;
   --border-color: black;
-  --header-height: 48px;
+  --gap: 1.5rem;
 }
 
 body {
@@ -24,7 +24,6 @@ body {
   font-size: 16px;
   font-weight: normal;
   margin: 0;
-  padding-top: var(--header-height);
 }
 
 a { color: inherit; text-decoration: underline dotted; text-underline-offset: 4px; }
@@ -36,14 +35,12 @@ a:hover { text-decoration-style: solid; }
   top: 0;
   left: 0;
   right: 0;
-  height: var(--header-height);
   background: var(--background-color);
-  
+  z-index: 100;
+  padding: var(--gap) 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1rem;
-  z-index: 100;
 }
 
 #logo {
@@ -52,18 +49,28 @@ a:hover { text-decoration-style: solid; }
   text-transform: uppercase;
   letter-spacing: 0.05em;
   cursor: pointer;
+  line-height: 1;
 }
 
 #mode-menu {
   font-size: 13px;
   opacity: 0.5;
+  line-height: 1;
 }
 
 /* GRID VIEW */
-#view-grid { padding: 2rem 1rem 1rem; }
+#view-grid {
+  padding: 0 1rem 1rem;
+}
+
+#nav-spacer {
+  /* Empuja el contenido debajo del header fijo.
+     Altura = padding-top + line-height del logo + padding-bottom + gap hasta filtros */
+  height: calc(var(--gap) + 1em + var(--gap) + var(--gap));
+}
 
 #main-navigation {
-  margin-bottom: 2rem;
+  margin-bottom: var(--gap);
   display: flex;
   flex-flow: wrap;
   gap: 0.5rem;
@@ -136,7 +143,11 @@ a:hover { text-decoration-style: solid; }
 }
 
 /* DETAIL PAGE */
-#view-detail { display: none; padding: 1rem; }
+#view-detail { display: none; padding: 0 1rem 1rem; }
+
+#detail-spacer {
+  height: calc(var(--gap) + 1em + var(--gap) + var(--gap));
+}
 
 .detail-back {
   font-family: Courier, "Courier New", monospace;
@@ -147,7 +158,7 @@ a:hover { text-decoration-style: solid; }
   padding: 0.75rem;
   cursor: pointer;
   color: var(--color);
-  margin-bottom: 2rem;
+  margin-bottom: var(--gap);
   display: inline-block;
 }
 .detail-back:hover { border-style: solid; }
@@ -222,11 +233,13 @@ a:hover { text-decoration-style: solid; }
 </header>
 
 <div id="view-grid">
+  <div id="nav-spacer"></div>
   <nav id="main-navigation"></nav>
   <div class="explore-blocks" id="grid"></div>
 </div>
 
 <div id="view-detail">
+  <div id="detail-spacer"></div>
   <button class="detail-back" onclick="showGrid()">← Everything</button>
   <div class="detail-body">
     <div class="detail-type" id="d-area"></div>
@@ -246,6 +259,7 @@ a:hover { text-decoration-style: solid; }
 <script>
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZvp_64L-DXn8A9lYH2kNKuguom0IMjiFRKKsZCHH4yI4uIOh-tr1IaUmGUPQuHZs9hFStxUHYExFo/pub?gid=2086028292&single=true&output=csv';
 const STATUS_LABELS = { active:'Active', blocked:'Blocked', incubating:'Incubating', pending:'Pending' };
+const CACHE_KEY = 'cabal_v2';
 
 let projects = [], currentFilter = 'all';
 
@@ -263,37 +277,32 @@ function parseCSV(text) {
     const obj = {};
     headers.forEach((h,i) => obj[h]=(vals[i]||'').replace(/^"|"$/g,''));
     return obj;
-  }).filter(p => p.title && (p.visible || 'yes').toLowerCase().trim() !== 'no');
+  }).filter(p => p.title && (p.visible||'yes').toLowerCase().trim() !== 'no');
+}
+
+function renderAll(data) {
+  projects = data;
+  document.getElementById('mode-menu').textContent = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  renderNav();
+  renderGrid();
 }
 
 async function load() {
-  const CACHE_KEY = 'cabal_projects';
-  const CACHE_TS = 'cabal_projects_ts';
-
-  // Carga inmediata desde caché si existe
-  const cached = localStorage.getItem(CACHE_KEY);
-  if (cached) {
-    projects = JSON.parse(cached);
-    document.getElementById('mode-menu').textContent = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-    renderNav();
-    renderGrid();
-  }
-
-  // Refresca en segundo plano siempre
+  // Carga desde caché inmediatamente
   try {
-    const res = await fetch(CSV_URL);
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) renderAll(JSON.parse(cached));
+  } catch(e) {}
+
+  // Siempre refresca desde el Sheet
+  try {
+    const res = await fetch(CSV_URL + '&t=' + Date.now());
     const text = await res.text();
     const fresh = parseCSV(text);
     localStorage.setItem(CACHE_KEY, JSON.stringify(fresh));
-    localStorage.setItem(CACHE_TS, Date.now());
-    // Solo re-renderiza si no había caché o si hay cambios
-    if (!cached || JSON.stringify(fresh) !== JSON.stringify(projects)) {
-      projects = fresh;
-      renderNav();
-      renderGrid();
-    }
+    renderAll(fresh);
   } catch(e) {
-    if (!cached) {
+    if (!projects.length) {
       document.getElementById('grid').innerHTML = '<p style="opacity:0.4;font-size:13px;padding:1rem 0;">Could not load data.</p>';
     }
   }
@@ -309,7 +318,7 @@ function renderNav() {
   const el = document.getElementById('main-navigation');
   const areas = [{id:'all',label:'Everything'}, ...getAreas()];
   el.innerHTML = areas.map(a =>
-    `<button data-area="${a.id}" class="${a.id==='all'?'active':''}" onclick="filterBy('${a.id}',this)">${a.label}</button>`
+    `<button data-area="${a.id}" class="${a.id===currentFilter?'active':''}" onclick="filterBy('${a.id}',this)">${a.label}</button>`
   ).join('');
 }
 
