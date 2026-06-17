@@ -14,6 +14,7 @@ ul { list-style-type: none; margin: 0; padding: 0; }
   --background-color: white;
   --color: black;
   --border-color: black;
+  --header-height: 48px;
 }
 
 body {
@@ -22,35 +23,46 @@ body {
   font-family: Courier, "Courier New", monospace;
   font-size: 16px;
   font-weight: normal;
-  padding: 1rem;
-  min-height: 100vh;
   margin: 0;
+  padding-top: var(--header-height);
 }
 
 a { color: inherit; text-decoration: underline dotted; text-underline-offset: 4px; }
 a:hover { text-decoration-style: solid; }
 
-body > header { position: relative; margin-bottom: 0; }
+/* FIXED HEADER */
+#site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background: var(--background-color);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  z-index: 100;
+}
 
 #logo {
-  display: block;
-  margin-bottom: 1rem;
   font-size: 14px;
   font-weight: normal;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  cursor: pointer;
 }
 
 #mode-menu {
-  position: absolute;
-  top: 0;
-  right: 0;
   font-size: 13px;
   opacity: 0.5;
 }
 
+/* GRID VIEW */
+#view-grid { padding: 1rem; }
+
 #main-navigation {
-  margin-top: 1rem;
   margin-bottom: 2rem;
   display: flex;
   flex-flow: wrap;
@@ -114,7 +126,6 @@ body > header { position: relative; margin-bottom: 0; }
   font-size: 13px;
   line-height: 1.4;
   opacity: 0.85;
-  font-weight: normal;
 }
 
 .explore-blocks .box > .status-label {
@@ -122,13 +133,10 @@ body > header { position: relative; margin-bottom: 0; }
   text-transform: uppercase;
   letter-spacing: 0.05em;
   opacity: 0.7;
-  font-weight: normal;
 }
 
 /* DETAIL PAGE */
-#view-detail { display: none; }
-
-#view-detail header { margin-bottom: 2rem; }
+#view-detail { display: none; padding: 1rem; }
 
 .detail-back {
   font-family: Courier, "Courier New", monospace;
@@ -139,6 +147,8 @@ body > header { position: relative; margin-bottom: 0; }
   padding: 0.75rem;
   cursor: pointer;
   color: var(--color);
+  margin-bottom: 2rem;
+  display: inline-block;
 }
 .detail-back:hover { border-style: solid; }
 
@@ -150,7 +160,6 @@ body > header { position: relative; margin-bottom: 0; }
   letter-spacing: 0.06em;
   opacity: 0.5;
   margin-bottom: 0.75rem;
-  font-weight: normal;
 }
 
 .detail-title {
@@ -169,7 +178,6 @@ body > header { position: relative; margin-bottom: 0; }
   opacity: 0.5;
   margin-bottom: 0.5rem;
   margin-top: 1.5rem;
-  font-weight: normal;
 }
 
 .detail-text {
@@ -177,14 +185,9 @@ body > header { position: relative; margin-bottom: 0; }
   line-height: 1.6;
   border-left: 1px solid var(--border-color);
   padding-left: 1rem;
-  font-weight: normal;
 }
 
-.detail-desc {
-  font-size: 16px;
-  line-height: 1.6;
-  font-weight: normal;
-}
+.detail-desc { font-size: 16px; line-height: 1.6; }
 
 .detail-meta {
   margin-top: 2rem;
@@ -193,7 +196,6 @@ body > header { position: relative; margin-bottom: 0; }
   display: flex;
   gap: 2rem;
   font-size: 13px;
-  font-weight: normal;
 }
 
 .detail-meta-item span:first-child {
@@ -214,19 +216,18 @@ body > header { position: relative; margin-bottom: 0; }
 </head>
 <body>
 
+<header id="site-header">
+  <div id="logo" onclick="showGrid()">Cabal Studio</div>
+  <div id="mode-menu"></div>
+</header>
+
 <div id="view-grid">
-  <header>
-    <div id="logo">Cabal Studio</div>
-    <div id="mode-menu" id="updated-date"></div>
-  </header>
   <nav id="main-navigation"></nav>
   <div class="explore-blocks" id="grid"></div>
 </div>
 
 <div id="view-detail">
-  <header>
-    <button class="detail-back" onclick="showGrid()">← Everything</button>
-  </header>
+  <button class="detail-back" onclick="showGrid()">← Everything</button>
   <div class="detail-body">
     <div class="detail-type" id="d-area"></div>
     <h1 class="detail-title" id="d-title"></h1>
@@ -262,7 +263,7 @@ function parseCSV(text) {
     const obj = {};
     headers.forEach((h,i) => obj[h]=(vals[i]||'').replace(/^"|"$/g,''));
     return obj;
-  }).filter(p=>p.title);
+  }).filter(p => p.title && p.visible !== 'no');
 }
 
 async function load() {
@@ -274,7 +275,7 @@ async function load() {
     renderNav();
     renderGrid();
   } catch(e) {
-    document.getElementById('grid').innerHTML = '<p style="opacity:0.4;font-size:13px;">Could not load data.</p>';
+    document.getElementById('grid').innerHTML = '<p style="opacity:0.4;font-size:13px;padding:1rem 0;">Could not load data.</p>';
   }
 }
 
@@ -299,10 +300,8 @@ function renderGrid() {
     const idx = projects.indexOf(p);
     const bg = p.color || '#555';
     const fg = p.text_color || '#ffffff';
-    const labelBg = fg;
-    const labelFg = bg;
     return `<div class="box" style="background:${bg};color:${fg}" onclick="showDetail(${idx})">
-      <div class="type" style="background:${labelBg};color:${labelFg}">${p.area_label}</div>
+      <div class="type" style="background:${fg};color:${bg}">${p.area_label}</div>
       <div class="title">${p.title}</div>
       <div class="next">${p.next}</div>
       <div class="status-label">${STATUS_LABELS[p.status]||p.status}</div>
