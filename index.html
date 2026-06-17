@@ -1,301 +1,326 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cabal Studio — Current</title>
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<title>Cabal Studio — Current work</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --black: #111;
-    --white: #fff;
-    --gray: #888;
-    --mono: 'Courier Prime', 'Courier New', monospace;
-    --gap: 6px;
-    --card-size: 240px;
+*, ::after, ::before { box-sizing: border-box; }
+h1,h2,h3,h4,h5 { font-size: inherit; font-weight: inherit; margin: 0; }
+ul { list-style-type: none; margin: 0; padding: 0; }
+figure { margin: 0; padding: 0; }
+.hidden { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
+ 
+.button {
+  color: var(--color);
+  background: var(--background-color);
+  border: 1px dotted var(--border-color);
+  padding: 0.6875rem;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+}
+.button:hover { border-style: solid; }
+ 
+.rounded-button {
+  color: var(--color);
+  background: var(--background-color);
+  border: 1px dotted var(--border-color);
+  padding: 0.6875rem;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 1.25rem;
+}
+.rounded-button:hover { border-style: solid; }
+ 
+:root {
+  --background-color: white;
+  --color: black;
+  --border-color: black;
+}
+ 
+body {
+  background-color: var(--background-color);
+  color: var(--color);
+  font-family: Courier, "Courier New", monospace;
+  font-size: 16px;
+  padding: 1rem;
+  min-height: 100vh;
+  margin: 0;
+}
+ 
+a {
+  color: inherit;
+  text-decoration: underline dotted;
+  text-decoration-thickness: 0.05rem;
+  text-decoration-skip-ink: none;
+  text-underline-offset: 4px;
+}
+a:hover, a.active { text-decoration-style: solid; }
+ 
+body > header { position: relative; margin-bottom: 0; }
+ 
+#logo {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+ 
+#mode-menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 1.25rem;
+  font-size: 14px;
+}
+ 
+#mode-menu > span { opacity: 0.5; }
+ 
+#main-navigation {
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-flow: wrap;
+  gap: 0.5rem;
+}
+ 
+#main-navigation button {
+  position: relative;
+  display: inline-block;
+  padding: 0.75rem;
+  color: var(--color);
+  border: 1px dotted var(--border-color);
+  text-decoration: none;
+  background: var(--background-color);
+  cursor: pointer;
+  user-select: none;
+  font-family: Courier, "Courier New", monospace;
+  font-size: 16px;
+}
+ 
+#main-navigation button:hover,
+#main-navigation button.active { border-style: solid; }
+ 
+#main-navigation button.rounded { border-radius: 1.25rem; }
+ 
+/* GRID */
+.explore-blocks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+ 
+.explore-blocks .box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 270px;
+  height: 270px;
+  padding: 0.625rem;
+  border: 1px dotted var(--border-color);
+  text-decoration: none;
+  line-height: 1.3rem;
+  cursor: pointer;
+  color: white;
+}
+ 
+.explore-blocks .box:hover { border-style: solid; }
+ 
+.explore-blocks .box > .type {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 4px;
+  align-self: flex-start;
+  margin-bottom: 0;
+  color: black;
+  background: white;
+}
+ 
+.explore-blocks .box > .title {
+  font-size: 1.2rem;
+  line-height: 1.25;
+  font-weight: bold;
+  flex: 1;
+}
+ 
+.explore-blocks .box > .next {
+  font-size: 13px;
+  line-height: 1.4;
+  opacity: 0.85;
+}
+ 
+.explore-blocks .box > .status-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: auto;
+  opacity: 0.7;
+}
+ 
+/* DETAIL PAGE */
+#view-detail { display: none; }
+ 
+#view-detail header {
+  position: relative;
+  margin-bottom: 2rem;
+}
+ 
+.detail-back {
+  font-family: Courier, "Courier New", monospace;
+  font-size: 16px;
+  background: var(--background-color);
+  border: 1px dotted var(--border-color);
+  padding: 0.75rem;
+  cursor: pointer;
+  color: var(--color);
+}
+.detail-back:hover { border-style: solid; }
+ 
+.detail-body { max-width: 640px; }
+ 
+.detail-type {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.5;
+  margin-bottom: 0.75rem;
+}
+ 
+.detail-title {
+  font-size: 2rem;
+  line-height: 1.2;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+ 
+.detail-colorbar {
+  height: 4px;
+  margin-bottom: 2rem;
+}
+ 
+.detail-section {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.5;
+  margin-bottom: 0.5rem;
+  margin-top: 1.5rem;
+}
+ 
+.detail-text {
+  font-size: 16px;
+  line-height: 1.6;
+  border-left: 1px solid var(--border-color);
+  padding-left: 1rem;
+}
+ 
+.detail-desc {
+  font-size: 16px;
+  line-height: 1.6;
+}
+ 
+.detail-meta {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px dotted var(--border-color);
+  display: flex;
+  gap: 2rem;
+  font-size: 13px;
+}
+ 
+.detail-meta-item span:first-child {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.5;
+  margin-bottom: 2px;
+}
+ 
+@media (max-width: 600px) {
+  .explore-blocks .box {
+    width: calc(50vw - 1.125rem);
+    height: calc(50vw - 1.125rem);
   }
-
-  body {
-    font-family: var(--mono);
-    background: var(--white);
-    color: var(--black);
-    font-size: 15px;
-    line-height: 1.5;
-  }
-
-  /* GRID VIEW */
-  #view-grid { display: block; }
-  #view-detail { display: none; }
-
-  .site-header {
-    border-bottom: 1.5px solid var(--black);
-    padding: 1rem 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .site-name {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-  }
-
-  .site-date {
-    font-size: 12px;
-    color: var(--gray);
-  }
-
-  .nav {
-    border-bottom: 1.5px solid var(--black);
-    padding: 0 1.5rem;
-    display: flex;
-    gap: 0;
-    overflow-x: auto;
-  }
-
-  .nav-btn {
-    font-family: var(--mono);
-    font-size: 13px;
-    padding: 10px 18px 10px 0;
-    background: none;
-    border: none;
-    border-bottom: 2.5px solid transparent;
-    color: var(--gray);
-    cursor: pointer;
-    white-space: nowrap;
-    margin-bottom: -1.5px;
-  }
-
-  .nav-btn:hover { color: var(--black); }
-  .nav-btn.active { color: var(--black); border-bottom-color: var(--black); font-weight: 700; }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, var(--card-size));
-    gap: var(--gap);
-    padding: var(--gap);
-    background: var(--black);
-  }
-
-  .card {
-    width: var(--card-size);
-    height: var(--card-size);
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    cursor: pointer;
-    transition: opacity 0.12s;
-    overflow: hidden;
-  }
-
-  .card:hover { opacity: 0.88; }
-
-  .card-area {
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    opacity: 0.65;
-    margin-bottom: 0.4rem;
-  }
-
-  .card-title {
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 0.5rem;
-  }
-
-  .card-next {
-    font-size: 11px;
-    line-height: 1.45;
-    opacity: 0.75;
-    flex: 1;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-  }
-
-  .card-status {
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    opacity: 0.65;
-    margin-top: 0.75rem;
-  }
-
-  /* DETAIL VIEW */
-  #view-detail {
-    min-height: 100vh;
-  }
-
-  .detail-header {
-    border-bottom: 1.5px solid var(--black);
-    padding: 1rem 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .detail-back {
-    font-family: var(--mono);
-    font-size: 13px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--black);
-    text-decoration: underline;
-    padding: 0;
-  }
-
-  .detail-body {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 3rem 2rem 6rem;
-  }
-
-  .detail-area-label {
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--gray);
-    margin-bottom: 0.75rem;
-  }
-
-  .detail-title {
-    font-size: 32px;
-    font-weight: 700;
-    line-height: 1.15;
-    margin-bottom: 1.5rem;
-  }
-
-  .detail-color-bar {
-    height: 6px;
-    margin-bottom: 2rem;
-  }
-
-  .detail-section-label {
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--gray);
-    margin-bottom: 0.5rem;
-    margin-top: 1.75rem;
-  }
-
-  .detail-section-label:first-of-type { margin-top: 0; }
-
-  .detail-text {
-    font-size: 15px;
-    line-height: 1.65;
-    color: #222;
-  }
-
-  .detail-next-text {
-    font-size: 15px;
-    line-height: 1.65;
-    border-left: 3px solid var(--black);
-    padding-left: 1rem;
-  }
-
-  .detail-status-row {
-    display: flex;
-    gap: 2rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #ddd;
-  }
-
-  .detail-stat label {
-    display: block;
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--gray);
-    margin-bottom: 4px;
-  }
-
-  .detail-stat span {
-    font-size: 13px;
-    font-weight: 700;
-  }
-
-  @media (max-width: 600px) {
-    :root { --card-size: calc(50vw - 9px); }
-    .card-title { font-size: 13px; }
-    .detail-title { font-size: 24px; }
-  }
+  .explore-blocks .box > .title { font-size: 0.9rem; }
+  .explore-blocks .box > .next { display: none; }
+}
 </style>
 </head>
 <body>
-
+ 
 <div id="view-grid">
-  <header class="site-header">
-    <div class="site-name">Cabal Studio</div>
-    <div class="site-date" id="updated-date"></div>
+  <header>
+    <div id="logo">Cabal Studio</div>
+    <div id="mode-menu">
+      <span id="updated-date"></span>
+    </div>
   </header>
-  <nav class="nav" id="nav"></nav>
-  <div class="grid" id="grid"></div>
+ 
+  <nav id="main-navigation"></nav>
+ 
+  <div class="explore-blocks" id="grid"></div>
 </div>
-
+ 
 <div id="view-detail">
-  <header class="detail-header">
-    <button class="detail-back" onclick="showGrid()">← Back</button>
-    <div class="site-name">Cabal Studio</div>
+  <header>
+    <button class="detail-back" onclick="showGrid()">← Everything</button>
   </header>
   <div class="detail-body">
-    <div class="detail-area-label" id="d-area"></div>
-    <div class="detail-title" id="d-title"></div>
-    <div class="detail-color-bar" id="d-colorbar"></div>
-    <div class="detail-section-label">What's next</div>
-    <div class="detail-next-text" id="d-next"></div>
-    <div class="detail-section-label">About</div>
-    <div class="detail-text" id="d-desc"></div>
-    <div class="detail-status-row">
-      <div class="detail-stat"><label>Status</label><span id="d-status"></span></div>
-      <div class="detail-stat" id="d-where-wrap"><label>Lives in</label><span id="d-where"></span></div>
+    <div class="detail-type" id="d-area"></div>
+    <h1 class="detail-title" id="d-title"></h1>
+    <div class="detail-colorbar" id="d-colorbar"></div>
+    <div class="detail-section">What's next</div>
+    <div class="detail-text" id="d-next"></div>
+    <div class="detail-section">About</div>
+    <div class="detail-desc" id="d-desc"></div>
+    <div class="detail-meta">
+      <div class="detail-meta-item"><span>Status</span><span id="d-status"></span></div>
+      <div class="detail-meta-item" id="d-where-wrap"><span>Lives in</span><span id="d-where"></span></div>
     </div>
   </div>
 </div>
-
+ 
 <script>
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZvp_64L-DXn8A9lYH2kNKuguom0IMjiFRKKsZCHH4yI4uIOh-tr1IaUmGUPQuHZs9hFStxUHYExFo/pub?gid=2086028292&single=true&output=csv';
-
 const STATUS_LABELS = { active:'Active', blocked:'Blocked', incubating:'Incubating', pending:'Pending' };
-
+ 
 let projects = [];
 let currentFilter = 'all';
-
+ 
 function parseCSV(text) {
   const lines = text.trim().split('\n');
   const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g,''));
   return lines.slice(1).map(line => {
     const vals = []; let cur = '', inQ = false;
     for (let c of line) {
-      if (c === '"') { inQ = !inQ; }
-      else if (c === ',' && !inQ) { vals.push(cur.trim()); cur = ''; }
-      else cur += c;
+      if (c==='"') { inQ=!inQ; }
+      else if (c===',' && !inQ) { vals.push(cur.trim()); cur=''; }
+      else cur+=c;
     }
     vals.push(cur.trim());
     const obj = {};
-    headers.forEach((h,i) => obj[h] = (vals[i]||'').replace(/^"|"$/g,''));
+    headers.forEach((h,i) => obj[h]=(vals[i]||'').replace(/^"|"$/g,''));
     return obj;
-  }).filter(p => p.title);
+  }).filter(p=>p.title);
 }
-
+ 
 function luminance(hex) {
-  if (!hex || hex.length < 7) return 0.5;
-  const r=parseInt(hex.slice(1,3),16)/255, g=parseInt(hex.slice(3,5),16)/255, b=parseInt(hex.slice(5,7),16)/255;
-  const f = c => c<=0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055,2.4);
+  if (!hex||hex.length<7) return 0.5;
+  const r=parseInt(hex.slice(1,3),16)/255,g=parseInt(hex.slice(3,5),16)/255,b=parseInt(hex.slice(5,7),16)/255;
+  const f=c=>c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);
   return 0.2126*f(r)+0.7152*f(g)+0.0722*f(b);
 }
-
-function fg(hex) { return luminance(hex) > 0.35 ? '#111' : '#fff'; }
-
+ 
 async function load() {
   try {
     const res = await fetch(CSV_URL);
@@ -304,49 +329,63 @@ async function load() {
     document.getElementById('updated-date').textContent = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
     renderNav();
     renderGrid();
+    loadFilterFromURL();
   } catch(e) {
-    document.getElementById('grid').innerHTML = '<p style="padding:2rem;color:#fff;font-size:13px;">Could not load data.</p>';
+    document.getElementById('grid').innerHTML = '<p style="opacity:0.4;font-size:13px;">Could not load data.</p>';
   }
 }
-
+ 
 function getAreas() {
-  const seen = new Set(), areas = [];
-  projects.forEach(p => { if(!seen.has(p.area)){ seen.add(p.area); areas.push({id:p.area,label:p.area_label}); }});
+  const seen=new Set(), areas=[];
+  projects.forEach(p=>{ if(!seen.has(p.area)){seen.add(p.area);areas.push({id:p.area,label:p.area_label});} });
   return areas;
 }
-
+ 
 function renderNav() {
-  const el = document.getElementById('nav');
+  const el = document.getElementById('main-navigation');
   const areas = [{id:'all',label:'Everything'}, ...getAreas()];
   el.innerHTML = areas.map(a =>
-    `<button class="nav-btn ${a.id==='all'?'active':''}" onclick="filterBy('${a.id}',this)">${a.label}</button>`
+    `<button data-area="${a.id}" class="${a.id==='all'?'active':''}" onclick="filterBy('${a.id}',this)">${a.label}</button>`
   ).join('');
 }
-
+ 
 function renderGrid() {
   const el = document.getElementById('grid');
   const filtered = currentFilter==='all' ? projects : projects.filter(p=>p.area===currentFilter);
   el.innerHTML = filtered.map(p => {
-    const bg = p.color||'#ccc', color = fg(bg);
     const idx = projects.indexOf(p);
-    return `<div class="card" style="background:${bg};color:${color}" onclick="showDetail(${idx})">
-      <div>
-        <div class="card-area">${p.area_label}</div>
-        <div class="card-title">${p.title}</div>
-        <div class="card-next">${p.next}</div>
-      </div>
-      <div class="card-status">${STATUS_LABELS[p.status]||p.status}</div>
+    const bg = p.color||'#555';
+    const textCol = luminance(bg)>0.35?'#111':'#fff';
+    const labelBg = luminance(bg)>0.35?'#111':'#fff';
+    const labelCol = luminance(bg)>0.35?'#fff':'#111';
+    return `<div class="box" style="background:${bg};color:${textCol}" onclick="showDetail(${idx})">
+      <div class="type" style="background:${labelBg};color:${labelCol}">${p.area_label}</div>
+      <div class="title">${p.title}</div>
+      <div class="next">${p.next}</div>
+      <div class="status-label">${STATUS_LABELS[p.status]||p.status}</div>
     </div>`;
   }).join('');
 }
-
+ 
 function filterBy(areaId, btn) {
   currentFilter = areaId;
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#main-navigation button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderGrid();
+  const url = new URL(location);
+  if (areaId==='all') { url.search=null; history.replaceState(null,'',window.location.pathname); }
+  else { url.searchParams.set('area',areaId); history.replaceState(null,'',url); }
 }
-
+ 
+function loadFilterFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('area')) {
+    const area = params.get('area');
+    const btn = document.querySelector(`#main-navigation button[data-area="${area}"]`);
+    if (btn) filterBy(area, btn);
+  }
+}
+ 
 function showDetail(idx) {
   const p = projects[idx];
   if (!p) return;
@@ -357,23 +396,22 @@ function showDetail(idx) {
   document.getElementById('d-desc').textContent = p.desc;
   document.getElementById('d-status').textContent = STATUS_LABELS[p.status]||p.status;
   const whereWrap = document.getElementById('d-where-wrap');
-  if (p.where && p.where !== '—') {
+  if (p.where && p.where!=='—') {
     document.getElementById('d-where').textContent = p.where;
-    whereWrap.style.display = 'block';
-  } else {
-    whereWrap.style.display = 'none';
-  }
-  document.getElementById('view-grid').style.display = 'none';
-  document.getElementById('view-detail').style.display = 'block';
+    whereWrap.style.display='block';
+  } else { whereWrap.style.display='none'; }
+  document.getElementById('view-grid').style.display='none';
+  document.getElementById('view-detail').style.display='block';
   window.scrollTo(0,0);
 }
-
+ 
 function showGrid() {
-  document.getElementById('view-grid').style.display = 'block';
-  document.getElementById('view-detail').style.display = 'none';
+  document.getElementById('view-grid').style.display='block';
+  document.getElementById('view-detail').style.display='none';
 }
-
+ 
 load();
 </script>
 </body>
 </html>
+ 
