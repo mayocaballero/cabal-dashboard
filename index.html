@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cabal Studio — Estado actual</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #faf9f7;
+    --surface: #fff;
+    --text-primary: #1a1a1a;
+    --text-secondary: #666;
+    --text-tertiary: #aaa;
+    --border: rgba(0,0,0,0.1);
+    --border-hover: rgba(0,0,0,0.28);
+    --active: #1D9E75;
+    --blocked: #EF9F27;
+    --incubating: #AFA9EC;
+    --pending: #b0aea8;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    padding: 2rem 1.5rem;
+    max-width: 680px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+
+  header {
+    padding-bottom: 1.25rem;
+    border-bottom: 0.5px solid var(--border);
+    margin-bottom: 1.75rem;
+  }
+
+  .header-meta {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 4px;
+  }
+
+  header h1 {
+    font-size: 21px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .updated {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-active    { background: var(--active); }
+  .dot-blocked   { background: var(--blocked); }
+  .dot-incubating{ background: var(--incubating); }
+  .dot-pending   { background: var(--pending); }
+
+  .filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+  }
+
+  .filter-btn {
+    font-size: 11px;
+    padding: 3px 11px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border-hover);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+
+  .filter-btn:hover { border-color: var(--text-primary); color: var(--text-primary); }
+  .filter-btn.active { background: var(--text-primary); color: #fff; border-color: var(--text-primary); }
+
+  .area { margin-bottom: 2rem; }
+
+  .area-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+  }
+
+  .project-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 0.5px solid var(--border);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .project-row:last-child { border-bottom: none; }
+  .project-row:hover .project-title { color: var(--text-secondary); }
+
+  .dot-col {
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+
+  .project-body { flex: 1; }
+
+  .project-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    transition: color 0.1s;
+  }
+
+  .project-next {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .project-meta {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 3px;
+  }
+
+  .detail-panel {
+    display: none;
+    background: var(--surface);
+    border: 0.5px solid var(--border-hover);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 4px 0 8px 20px;
+  }
+
+  .detail-panel.open { display: block; }
+
+  .detail-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .detail-where {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .hidden { display: none; }
+
+  @media (max-width: 480px) {
+    body { padding: 1.25rem 1rem; }
+    header h1 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-meta">Cabal Studio</div>
+  <h1>Estado actual</h1>
+  <div class="updated" id="updated-date"></div>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="dot dot-active"></div> En curso</div>
+  <div class="legend-item"><div class="dot dot-blocked"></div> Bloqueado</div>
+  <div class="legend-item"><div class="dot dot-incubating"></div> Incubando</div>
+  <div class="legend-item"><div class="dot dot-pending"></div> Pendiente</div>
+</div>
+
+<div class="filters" id="filters"></div>
+
+<div id="areas"></div>
+
+<script>
+const STATUS_LABELS = {
+  active: 'En curso',
+  blocked: 'Bloqueado',
+  incubating: 'Incubando',
+  pending: 'Pendiente'
+};
+
+let currentFilter = 'all';
+let data = null;
+
+async function load() {
+  try {
+    const res = await fetch('projects.json');
+    data = await res.json();
+    render();
+  } catch(e) {
+    document.getElementById('areas').innerHTML = '<p style="color:#aaa;font-size:13px;">No se pudo cargar projects.json</p>';
+  }
+}
+
+function render() {
+  document.getElementById('updated-date').textContent = 'Actualizado ' + data.updated;
+
+  const filtersEl = document.getElementById('filters');
+  const allAreas = [{ id: 'all', label: 'Todo' }, ...data.areas.map(a => ({ id: a.id, label: a.label }))];
+  filtersEl.innerHTML = allAreas.map(a =>
+    `<button class="filter-btn ${a.id === 'all' ? 'active' : ''}" onclick="setFilter('${a.id}', this)">${a.label}</button>`
+  ).join('');
+
+  renderAreas();
+}
+
+function renderAreas() {
+  const areasEl = document.getElementById('areas');
+  areasEl.innerHTML = data.areas.map(area => {
+    const visible = currentFilter === 'all' || currentFilter === area.id;
+    return `
+      <div class="area ${visible ? '' : 'hidden'}" data-area="${area.id}">
+        <div class="area-label">${area.label}</div>
+        ${area.projects.map(p => `
+          <div class="project-row" onclick="toggleDetail('${p.id}')">
+            <div class="dot-col"><div class="dot dot-${p.status}"></div></div>
+            <div class="project-body">
+              <div class="project-title">${p.title}</div>
+              <div class="project-next">${p.next}</div>
+              <div class="project-meta">${STATUS_LABELS[p.status]}${p.where && p.where !== '—' ? ' · ' + p.where : ''}</div>
+            </div>
+          </div>
+          <div class="detail-panel" id="detail-${p.id}">
+            <div class="detail-desc">${p.desc}</div>
+            ${p.where && p.where !== '—' ? `<div class="detail-where">Vive en: ${p.where}</div>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }).join('');
+}
+
+function setFilter(areaId, btn) {
+  currentFilter = areaId;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.area').forEach(a => {
+    a.classList.toggle('hidden', currentFilter !== 'all' && a.dataset.area !== currentFilter);
+  });
+}
+
+function toggleDetail(id) {
+  const panel = document.getElementById('detail-' + id);
+  if (panel) panel.classList.toggle('open');
+}
+
+load();
+</script>
+</body>
+</html>

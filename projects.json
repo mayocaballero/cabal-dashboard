@@ -1,0 +1,157 @@
+{
+  "updated": "2026-06-17",
+  "areas": [
+    {
+      "id": "artistica",
+      "label": "Práctica artística",
+      "projects": [
+        {
+          "id": "i-owe-nothing",
+          "title": "I owe nothing",
+          "desc": "Serie fotográfica de largo recorrido. Sin marco cerrado todavía.",
+          "next": "Acumular sin enmarcar todavía.",
+          "status": "incubating",
+          "where": "iCloud"
+        },
+        {
+          "id": "wisteria",
+          "title": "Wisteria",
+          "desc": "Escultura — fragmento de Wisteria sinensis centenaria sobre soportes de arcilla inspirados en hoozue.",
+          "next": "Entrega para dossier curatorial La Blava — Centre Cívic Pere Pruna 2026/27.",
+          "status": "active",
+          "where": "Barcelona / física"
+        },
+        {
+          "id": "diario-suenos",
+          "title": "Diario de sueños",
+          "desc": "150+ entradas en Obsidian, grabadas en el umbral hipnagógico, transcritas con H1 como haiku.",
+          "next": "Primera lectura completa sin anotar. Segunda pasada: nucleos de resonancia.",
+          "status": "active",
+          "where": "Obsidian"
+        },
+        {
+          "id": "retratos-mujeres",
+          "title": "Retratos — mujeres mayores en Londres",
+          "desc": "Proyecto de retrato. Conceptualmente vivo, no iniciado.",
+          "next": "Empezar.",
+          "status": "incubating",
+          "where": "—"
+        },
+        {
+          "id": "fotografias-londres",
+          "title": "Fotografías Londres",
+          "desc": "Cuerpo acumulado sin marco definido todavía.",
+          "next": "Revisar el material acumulado y ver qué hay.",
+          "status": "incubating",
+          "where": "iCloud"
+        }
+      ]
+    },
+    {
+      "id": "investigacion",
+      "label": "Investigación y trabajo",
+      "projects": [
+        {
+          "id": "log-csq",
+          "title": "Log de iniciativas AI — CSQ",
+          "desc": "Registro de proyectos AI en Contentsquare como material de investigación.",
+          "next": "Añadir capa de observación: qué pregunta deja abierta cada iniciativa.",
+          "status": "active",
+          "where": "Notas / por definir"
+        },
+        {
+          "id": "sprint-metrics",
+          "title": "Automatización sprint metrics",
+          "desc": "Apps Script para volcar métricas de Monday.com a Google Sheets con validación antes de commit.",
+          "next": "Mantener activo.",
+          "status": "active",
+          "where": "Google Sheets / Monday.com"
+        },
+        {
+          "id": "agente-briefs",
+          "title": "Agente validación de briefs",
+          "desc": "Valida briefs creativos antes de que lleguen a los creativos y auto-comenta en Monday.com.",
+          "next": "Recoger briefs reales anonimizados para testear el prompt.",
+          "status": "active",
+          "where": "Dust / Monday.com"
+        }
+      ]
+    },
+    {
+      "id": "tech",
+      "label": "Técnico",
+      "projects": [
+        {
+          "id": "cabal-mind",
+          "title": "Cabal Mind",
+          "desc": "Herramienta self-hosted en PHP para clipear contenido, colecciones, canvases y exportar a Claude. Ya construida.",
+          "next": "Desplegar en Railway.",
+          "status": "blocked",
+          "where": "Google Drive / local"
+        },
+        {
+          "id": "pixel-art",
+          "title": "Mosaico pixel-art — Google Sheets",
+          "desc": "Render glitch-style con paleta restringida, generado en celdas de Google Sheets.",
+          "next": "Resolver credenciales Google Cloud.",
+          "status": "blocked",
+          "where": "Google Sheets"
+        },
+        {
+          "id": "may-index",
+          "title": "Portfolio fotográfico — may index",
+          "desc": "Site estático HTML con metáfora de contact sheet fotográfico.",
+          "next": "Mantener activo.",
+          "status": "active",
+          "where": "Live"
+        },
+        {
+          "id": "repo-sonoro",
+          "title": "Repo Sonoro",
+          "desc": "App HTML de catálogo musical para el grupo de WhatsApp. oEmbed, detección de género, persistencia.",
+          "next": "Versión funcional construida.",
+          "status": "active",
+          "where": "Local"
+        },
+        {
+          "id": "instagram-eventos",
+          "title": "Agregador eventos Instagram",
+          "desc": "Calendario visual interactivo con mapa y vista mensual. Sin API de Meta.",
+          "next": "Definir siguiente paso técnico.",
+          "status": "pending",
+          "where": "—"
+        },
+        {
+          "id": "ipod-library",
+          "title": "Gestión biblioteca musical (iPod)",
+          "desc": "Sistema de gestión de librería musical para iPod. Arquitectura diseñada.",
+          "next": "Build.",
+          "status": "pending",
+          "where": "—"
+        }
+      ]
+    },
+    {
+      "id": "finance",
+      "label": "Finanzas",
+      "projects": [
+        {
+          "id": "cabal-finances",
+          "title": "Cabal Finances v6",
+          "desc": "Sistema de finanzas personales en Excel con imports de Wise, dashboard, proyección FIRE y cash flow.",
+          "next": "Sistema activo.",
+          "status": "active",
+          "where": "Excel / Google Drive"
+        },
+        {
+          "id": "extractor-contable",
+          "title": "Extractor documentos contables",
+          "desc": "App React para procesar recibos y facturas en EUR y GBP con extracción automática.",
+          "next": "Continuar arquitectura.",
+          "status": "active",
+          "where": "En desarrollo"
+        }
+      ]
+    }
+  ]
+}
