@@ -219,12 +219,22 @@ a:hover { text-decoration-style: solid; }
 }
 
 @media (max-width: 600px) {
+  .explore-blocks {
+    gap: 0.5rem;
+  }
   .explore-blocks .box {
     width: 100%;
-    height: auto;
-    min-height: 200px;
+    height: 0;
+    padding-bottom: 75%; /* 4:3 ratio */
+    position: relative;
   }
-  .explore-blocks .box > .next { display: block; }
+  .explore-blocks .box > * {
+    position: absolute;
+  }
+  .explore-blocks .box > .type { top: 0.625rem; left: 0.625rem; }
+  .explore-blocks .box > .title { top: 2.5rem; left: 0.625rem; right: 0.625rem; }
+  .explore-blocks .box > .next { display: block; bottom: 2rem; left: 0.625rem; right: 0.625rem; }
+  .explore-blocks .box > .status-label { bottom: 0.625rem; left: 0.625rem; }
 }
 </style>
 </head>
@@ -377,4 +387,3 @@ load();
 </body>
 </html>
 <!-- mobile fix placeholder -->
-
