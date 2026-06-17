@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cabal Studio — Current work</title>
+<title>Cabal Studio — Digital garden</title>
 <style>
 *, ::after, ::before { box-sizing: border-box; }
 h1,h2,h3,h4,h5 { font-size: inherit; font-weight: inherit; margin: 0; }
@@ -38,7 +38,7 @@ a:hover { text-decoration-style: solid; }
   right: 0;
   height: var(--header-height);
   background: var(--background-color);
-  border-bottom: 1px solid var(--border-color);
+  
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -267,15 +267,35 @@ function parseCSV(text) {
 }
 
 async function load() {
-  try {
-    const res = await fetch(CSV_URL);
-    const text = await res.text();
-    projects = parseCSV(text);
+  const CACHE_KEY = 'cabal_projects';
+  const CACHE_TS = 'cabal_projects_ts';
+
+  // Carga inmediata desde caché si existe
+  const cached = localStorage.getItem(CACHE_KEY);
+  if (cached) {
+    projects = JSON.parse(cached);
     document.getElementById('mode-menu').textContent = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
     renderNav();
     renderGrid();
+  }
+
+  // Refresca en segundo plano siempre
+  try {
+    const res = await fetch(CSV_URL);
+    const text = await res.text();
+    const fresh = parseCSV(text);
+    localStorage.setItem(CACHE_KEY, JSON.stringify(fresh));
+    localStorage.setItem(CACHE_TS, Date.now());
+    // Solo re-renderiza si no había caché o si hay cambios
+    if (!cached || JSON.stringify(fresh) !== JSON.stringify(projects)) {
+      projects = fresh;
+      renderNav();
+      renderGrid();
+    }
   } catch(e) {
-    document.getElementById('grid').innerHTML = '<p style="opacity:0.4;font-size:13px;padding:1rem 0;">Could not load data.</p>';
+    if (!cached) {
+      document.getElementById('grid').innerHTML = '<p style="opacity:0.4;font-size:13px;padding:1rem 0;">Could not load data.</p>';
+    }
   }
 }
 
