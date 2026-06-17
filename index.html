@@ -219,9 +219,12 @@ a:hover { text-decoration-style: solid; }
 }
 
 @media (max-width: 600px) {
-  .explore-blocks .box { width: calc(50vw - 1.125rem); height: calc(50vw - 1.125rem); }
-  .explore-blocks .box > .title { font-size: 0.9rem; }
-  .explore-blocks .box > .next { display: none; }
+  .explore-blocks .box {
+    width: 100%;
+    height: auto;
+    min-height: 200px;
+  }
+  .explore-blocks .box > .next { display: block; }
 }
 </style>
 </head>
@@ -373,3 +376,5 @@ load();
 </script>
 </body>
 </html>
+<!-- mobile fix placeholder -->
+
