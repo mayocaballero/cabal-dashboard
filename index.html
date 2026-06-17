@@ -24,7 +24,7 @@ body {
   font-size: 16px;
   font-weight: normal;
   margin: 0;
-  padding-top: var(--header-height);
+  padding-top: calc(var(--header-height) + 1.5rem);
 }
 
 a { color: inherit; text-decoration: underline dotted; text-underline-offset: 4px; }
@@ -263,7 +263,7 @@ function parseCSV(text) {
     const obj = {};
     headers.forEach((h,i) => obj[h]=(vals[i]||'').replace(/^"|"$/g,''));
     return obj;
-  }).filter(p => p.title && p.visible !== 'no');
+  }).filter(p => p.title && (p.visible || 'yes').toLowerCase().trim() !== 'no');
 }
 
 async function load() {
