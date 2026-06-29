@@ -65,3 +65,4 @@ git push
 - Decidir destino de `projects.json` (borrar vs. reutilizar).
 - Evolución futura hacia "jardín digital" de verdad: fotos, texto largo. Posible camino: Cabal Webs (motor PHP ya construido, sin desplegar, vive en Google Drive en `My Drive/Cabal Studio/cabal-webs`) en lugar de seguir solo con Sheets + HTML estático.
 
+
